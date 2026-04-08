@@ -1,5 +1,7 @@
+// Package for view layer (UI)
 package view;
 
+//Import JavaFX classes for GUI
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -10,18 +12,25 @@ import javafx.stage.Stage;
 import model.AppData;
 import model.HealthLog;
 import model.AppData;
+
+
+//HealthLogUI class (OOP: Inheritance)
 public class HealthLogUI extends Application {
 
+    // Start method for JavaFX UI (Method Overriding)
     @Override
     public void start(Stage stage) {
 
+
+        // Title label
         Label title = new Label("Health Log");
+        // Styling using CSS
         title.setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #2196F3;");
 
         // Date field
         Label dateLabel = new Label("Date:");
         TextField dateField = new TextField();
-        dateField.setPromptText("e.g. 2026-03-29");
+        dateField.setPromptText("e.g. 2026-03-29");  // hint text
         dateField.setPrefHeight(36);
 
         // BP field
@@ -50,7 +59,7 @@ public class HealthLogUI extends Application {
             "-fx-background-color: #9E9E9E; -fx-text-fill: white; " +
             "-fx-font-size: 13px; -fx-background-radius: 8;"
         );
-
+        // Message label for feedback
         Label msgLabel = new Label("");
 
         // Log display area
@@ -69,9 +78,11 @@ public class HealthLogUI extends Application {
         grid.addRow(1, bpLabel,    bpField);
         grid.addRow(2, sugarLabel, sugarField);
 
+        // Button layout
         HBox buttons = new HBox(12, saveBtn, backBtn);
         buttons.setAlignment(Pos.CENTER);
 
+        // Main layout
         VBox layout = new VBox(14, title, grid, buttons, msgLabel, logArea);
         layout.setAlignment(Pos.CENTER);
         layout.setPadding(new Insets(30));
@@ -79,23 +90,30 @@ public class HealthLogUI extends Application {
 
         // SAVE ACTION
         saveBtn.setOnAction(e -> {
+            // Get user input
             String date  = dateField.getText().trim();
             String bpStr = bpField.getText().trim();
             String sgStr = sugarField.getText().trim();
 
+
+            // Validation (Control Statement)
             if (date.isEmpty() || bpStr.isEmpty() || sgStr.isEmpty()) {
                 msgLabel.setStyle("-fx-text-fill: red;");
                 msgLabel.setText("Please fill in all fields.");
             } else {
                 try {
+                    // Convert string to double
                     double bp    = Double.parseDouble(bpStr);
                     double sugar = Double.parseDouble(sgStr);
 
+                    // Create HealthLog object (OOP: Object Creation)
                     HealthLog log = new HealthLog(date, bp, sugar);
-                    log.displayRecord();
+                    log.displayRecord(); // Polymorphism (method overriding)
 
+                    // Save data in AppData (shared storage)
                     AppData.addHealthLog(log); // ✅ save to shared store
 
+                    // Display in UI
                     logArea.appendText(
                         "Date: " + date +
                         " | BP: " + bp +
@@ -105,12 +123,14 @@ public class HealthLogUI extends Application {
                     msgLabel.setStyle("-fx-text-fill: green;");
                     msgLabel.setText("Log saved successfully!");
 
+                    // Clear fields
                     dateField.clear();
                     bpField.clear();
                     sugarField.clear();
 
                 } catch (NumberFormatException ex) {
                     msgLabel.setStyle("-fx-text-fill: red;");
+                    // Exception handling
                     msgLabel.setText("BP and Sugar must be numbers.");
                 }
             }
@@ -119,6 +139,7 @@ public class HealthLogUI extends Application {
         // BACK ACTION
         backBtn.setOnAction(e -> stage.close());
 
+        // Create scene and show stage
         Scene scene = new Scene(layout, 420, 500);
         stage.setTitle("Health Log");
         stage.setScene(scene);

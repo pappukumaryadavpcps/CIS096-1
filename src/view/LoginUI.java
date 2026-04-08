@@ -1,5 +1,7 @@
+// Package for view layer (UI)
 package view;
 
+//Import JavaFX classes
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -11,17 +13,19 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import util.UserDAO;
+//Login UI class (OOP: Inheritance)
 public class LoginUI extends Application {
 
+    // Start method (JavaFX entry point)
     @Override
     public void start(Stage stage) {
-        // Title
+    	
+        // --- Title Section ---
         Label title = new Label("Welcome Back");
         title.setFont(Font.font("Arial", FontWeight.BOLD, 22));
-
         Label subtitle = new Label("Login to your account");
         subtitle.setFont(Font.font("Arial", 13));
-        subtitle.setTextFill(Color.GRAY);
+
 
         // Email
         Label emailLabel = new Label("Email");
@@ -51,6 +55,7 @@ public class LoginUI extends Application {
             "-fx-font-size: 13px; -fx-background-radius: 6;"
         );
 
+        // Message label (for error/success)
         Label msgLabel = new Label("");
         msgLabel.setTextFill(Color.RED);
 
@@ -70,6 +75,8 @@ public class LoginUI extends Application {
             "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 12, 0, 0, 4);"
         );
 
+
+        // Root layout
         StackPane root = new StackPane(card);
         root.setStyle("-fx-background-color: #F0F2F5;");
 
@@ -78,25 +85,31 @@ public class LoginUI extends Application {
             String email = emailField.getText().trim();
             String pass  = passField.getText();
 
+            // Validate user using DAO (Database Access)
             if (UserDAO.validate(email, pass)) { // ✅ checks DB
                 msgLabel.setStyle("-fx-text-fill: green;");
                 msgLabel.setText("Login Successful!");
+                
+                // Open Dashboard
                 Stage dashboard = new Stage();
                 new DashboardUI().start(dashboard);
-                stage.close();
+                stage.close(); // close login window
             } else {
                 msgLabel.setStyle("-fx-text-fill: red;");
                 msgLabel.setText("Invalid email or password.");
             }
         });
 
-        // SIGNUP ACTION
+
+        // --- SIGNUP BUTTON ACTION ---
         signupBtn.setOnAction(e -> {
+            // Open signup window
             Stage signupStage = new Stage();
             new SignupUI().start(signupStage);
             stage.close();
         });
 
+        // Scene setup
         Scene scene = new Scene(root, 420, 500);
         stage.setTitle("Login");
         stage.setScene(scene);
